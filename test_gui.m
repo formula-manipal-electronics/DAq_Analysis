@@ -1,3 +1,4 @@
+% basic window initialisation
 backcolor = [0 0 0];
 main = figure('Name','ShankyMahadev','NumberTitle','off');
 main.Color = backcolor;
@@ -8,17 +9,22 @@ main.Units = 'pixels';
 
 t = [0:1:1000];
 
+% these are the vertical and horizontal lines there are 4 of them as 1 line for each
+% graph
 ver_pointer = zeros(4);
 hor_pointer = zeros(4);
 
-% temporary
+% temporary to be replaced by loading data code
 f = zeros(4,1001);
 f(1,1:1001) = sin(0.1*t);
 f(2,1:1001) = sin(0.1*t)./(0.1*t);
 f(3,1:1001) = sawtooth(0.5*t);
 f(4,1:1001) = tan(0.1*t);
 
-
+% p_width is size of hor pointer
+% delta is how much the ver pointer moves with each arrow press
+% curr_pos is the current loc of the ver pointer
+% last_time is the lenght of the data
 last_time = size(t);
 last_time = last_time(2);
 curr_pos = 250;
@@ -30,18 +36,25 @@ setappdata(main,'del',delta);
 setappdata(main,'lt',last_time);
 setappdata(main,'wd',p_width);
 
-vbox = uiextras.VBox('Parent',main,'Position',[0.028 0.225 0.95 0.78],'Padding',19,'BackgroundColor',backcolor);
-hbox = uiextras.HBox('Parent',main,'Position',[0 0 1 0.225],'BackgroundColor',[0 0 0]);
+%initialisation of layout
+vbox = uiextras.VBox('Parent',main,'Position',[0.028 0.225 0.95 0.775],'Padding',19,'BackgroundColor',backcolor);
+bar = uiextras.VBox('Parent',main,'Position',[0 0.215 1 0.01],'BackgroundColor',[0.5 0.5 0.5]);
+hbox = uiextras.HBox('Parent',main,'Position',[0 0 1 0.215],'BackgroundColor',[0 0 0]);
 s = warning('off', 'MATLAB:uitabgroup:OldVersion');
-disTabG = uitabgroup(hbox,'Position',[0 0 1 0.9]);
-tabcom = uitab('Parent',disTabG,'Title','Common','BackgroundColor',[0 0 0]);
+%disTabG = uitabgroup(hbox,'Position',[0 0 1 0.9]);
+%tabcom = uitab('Parent',disTabG,'Title','Common','BackgroundColor',[0 0 0]);
 
 set(main,'WindowKeyPressFcn',@keycallback)
 
+%creation of axes
 for k = 1:4  
     a(k) = axes(vbox,'ActivePositionProperty','Position');
 end
 
+%creation of gauages
+
+
+%temporary plotting needs to replaced
 plot(a(1),t,f(1,1:last_time),'LineWidth',1.5);
 plot(a(2),t,f(2,1:last_time),'g','LineWidth',1.5);
 plot(a(3),t,f(3,1:last_time),'r','LineWidth',1.5);
@@ -65,21 +78,26 @@ hold off
 setappdata(main,'vpoint',ver_pointer);
 setappdata(main,'hpoint',hor_pointer);
 setappdata(main,'data',f);
-setappdata(plots,'graphs',a);
+setappdata(main,'graphs',a);
 
 function keycallback(source,eventData)
 keypressed = eventData.Key;
 curr_pos = getappdata(source,'pos');
 delta= getappdata(source,'del');
+last_time = getappdata(source,'lt');
 if strcmpi(keypressed,'rightarrow')
-    curr_pos = curr_pos+delta;
-    update_pointer(curr_pos,source);
-    setappdata(source,'pos',curr_pos);
+    if (curr_pos+delta<=last_time)
+        curr_pos = curr_pos+delta;
+        update_pointer(curr_pos,source);
+        setappdata(source,'pos',curr_pos);
+    end
 end
 if strcmpi(keypressed,'leftarrow')
-    curr_pos = curr_pos-delta;
-    update_pointer(curr_pos,source);
-    setappdata(source,'pos',curr_pos);
+    if(curr_pos-delta>0)
+        curr_pos = curr_pos-delta;
+        update_pointer(curr_pos,source);
+        setappdata(source,'pos',curr_pos);
+    end
 end
 end
 
@@ -94,14 +112,3 @@ for k = 1:4
 end
 end
 
-%function zoom(main,)
-%a = getappdata(main,'graphs');
-%for k = 1:4
-%set(a(k),'XLim',[] 
-%end
-%end
-
-%cursorMode = datacursormode(gcf);
-%set(cursorMode,'enable','on');
-%x = handle(a2);
-%hDatatip = cursorMode.createDatatip(x);
