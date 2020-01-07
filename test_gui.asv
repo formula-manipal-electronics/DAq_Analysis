@@ -69,29 +69,6 @@ plot(a(3),t,f(3,1:last_time),'r','LineWidth',1.5);
 plot(a(4),t,f(4,1:last_time),'b','LineWidth',1.5);
 yD =0;
 
-%creation of ver gauages
-for k = 5:7
-    a(k) = axes(hbox,'ActivePositionProperty','Position');
-    vb_dummy(k-4)=  uiextras.VBox('Parent',hbox,'BackgroundColor',backcolor);
-end
-p = uipanel(hbox,'BackgroundColor',backcolor);
-set(hbox,'Sizes',[-0.75 -1 -0.75 -1 -0.75 -1 -9.75]);
-
-i = 1;
-for k = 1:3
-    for i = 1:3
-        ind(k,i) = uicontrol(vb_dummy(k),'Style','text','BackgroundColor',backcolor); 
-    end
-    set(vb_dummy(k),'Sizes',[100 30 30]);
-end
-
-%temporary plotting needs to replaced
-y = [rpm_value rpm_value];
-for k= 1:3
-    ar(k) = area(a(k+4),y); 
-end
-
-
 % formating of graphs
 hold on
 for k = 1:4
@@ -148,8 +125,6 @@ for k = 1:4
  for i = 1:3
     pk_ind(k,i) = uicontrol(graph_side_ind(k),'Style','text','BackgroundColor',[0.25 0.25 0.25]);
     set(pk_ind(k,i),'ForegroundColor',[1 1 1],'String',"0.5",'FontSize',10);
-    jEdit2 = java(findjobj(pk_ind(k,i)));
-    set(jEdit2,'VerticalAlignment',javax.swing.SwingConstants.CENTER);
  end
  set(graph_side_ind(k),'Sizes',[-0.75 -1 -1 -1]);
  end
