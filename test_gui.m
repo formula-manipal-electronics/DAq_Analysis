@@ -11,8 +11,6 @@ main.ToolBar = 'none';
 main.Units = 'pixels';
 
 close_buttons = zeros(4,1);
-jEdit = java(findjobj(0));
-
 t = [0:1:1000];
 
 % these are the vertical and horizontal lines there are 4 of them as 1 line for each
@@ -142,6 +140,7 @@ graph_side_ind = zeros(4,1);
 for k = 1:4
  graph_side_ind(k) = uiextras.VBox('Parent',vb_peak,'BackgroundColor',backcolor);
  close_buttons(k) = uicontrol(graph_side_ind(k),'Style','pushbutton','Position',[0 0 0.0475 0.0453],'String','Close');
+ set(close_buttons(k),'Callback',{@graph_close_keycallback,k})
  set(close_buttons(k),'BackgroundColor',[0.1 0.1 0.1],'ForegroundColor',[1 0 0],'FontWeight','bold'); 
  jEdit = java(findjobj(close_buttons(k)));
  set(jEdit,'FlyOverAppearance',true)
@@ -186,5 +185,9 @@ for k = 1:4
     set(ver_pointer(k),'XData',[pos pos]);
     set(hor_pointer(k),'XData',[pos-p_width pos+p_width],'YData',[f(k,pos) f(k,pos)]);
 end
+end
+
+function graph_close_keycallback(source,event,axis_no)
+display(axis_no);
 end
 
